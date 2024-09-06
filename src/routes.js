@@ -54,7 +54,7 @@ const routes = [
     route: "/Employees",
     component: <EmployeeTables/>,
     role: ["Admin"],
-    showInSideBar: false
+    showInSideBar: true
   },
   {
     type: "collapse",
@@ -64,7 +64,7 @@ const routes = [
     route: "/Parkings",
     component: <ParkingTables />,
     role: ["Admin"],
-    showInSideBar: false
+    showInSideBar: true
   },
   {
     type: "collapse",
