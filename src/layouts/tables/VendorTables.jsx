@@ -27,7 +27,10 @@ import { TextFields } from "@mui/icons-material";
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import { useNavigate } from "react-router-dom";
+
+
 const VendorTables = () => {
+
     const navigate = useNavigate();
     const [vendorDetailsList, setvendorDetailsList] = useState([]);
     const [editvendorDetails, seteditvendorDetails] = useState(null);
@@ -36,17 +39,20 @@ const VendorTables = () => {
     const [loader, setloader] = useState({
         open: false
     });
+
     const [vtDialog, setvtDialog] = useState({
         editopen: false,
         createopen: false,
         fullWidth: false,
         maxWidth: "ld"
     });
+
     const Address = ({ description }) => (
         <MDBox lineHeight={1} textAlign="left">
             <MDTypography variant="caption">{description}</MDTypography>
         </MDBox>
     );
+
     const Name = ({ image, name, email, description }) => (
         <MDBox display="flex" alignItems="center" lineHeight={1}>
             <MDAvatar src={image} name={name} size="sm" />
@@ -75,13 +81,13 @@ const VendorTables = () => {
             Name:
                 <Button
                     onClick={() => {
-                        localStorage.setItem("vendorID", data.vendorID)
+
+                        localStorage.setItem("vendorID", data.vendorID);
                         navigate("/dashboard-vendor");
 
                     }}
                     variant='text' style={{ margin: "0", padding: "0", textTransform: "none", fontWeight: "400", fontSize: "0.7rem" }}>
-                    <Name
-                        image={parkey} name={data.vendorName} style={{ fontSize: 'sm' }} />
+                    <Name image={parkey} name={data.vendorName} style={{ fontSize: 'sm' }} />
                 </Button>
 
             ,

@@ -50,6 +50,7 @@ const VehicleTableList = () => {
     const [value, setValue] = useState(0);
 
     const handleChange = (event, newValue) => {
+        console.log("new value", newValue);
         setValue(newValue);
     };
 
@@ -110,23 +111,30 @@ const VehicleTableList = () => {
 
     const token = localStorage.getItem("token");
     useEffect(() => {
-        fetchData()
-    }, []);
+        if (value == 0) fetchVehicalData();
+        else fetchEmployeData();
+
+    }, [value]);
 
 
-    const fetchData = async () => {
+    const fetchVehicalData = async () => {
         try {
             setloader(true);
-            var data = {
+
+            const requestedData = {
+
                 "search": search,
                 "parkingID": localStorage.getItem("parkingID"),
                 "vendorID": ""
+
             }
-            const response = await axios.post('https://xkzd75f5kd.execute-api.ap-south-1.amazonaws.com/prod/fetch-vehicle-list', data, {
+
+            const response = await axios.post('https://xkzd75f5kd.execute-api.ap-south-1.amazonaws.com/prod/fetch-vehicle-list', requestedData, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
+
             setvehicleDetailsList(response.data.vehicleDetailsList);
             console.log("res", response.data);
             setLoading(false);
@@ -137,6 +145,34 @@ const VehicleTableList = () => {
             setloader(false);
         }
     };
+
+    const fetchEmployeData = async () => {
+        try {
+            setloader(true);
+
+            const requestedData = {
+
+                parkingSpaceID: localStorage.getItem("parkingID"),
+
+            }
+
+            const response = await axios.post('https://xkzd75f5kd.execute-api.ap-south-1.amazonaws.com/prod/fetch-employee', requestedData, {
+
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            
+            setvehicleDetailsList(response.data.employeeDetailsList);
+            console.log("res", response.data);
+            setLoading(false);
+            setloader(false);
+        } catch (error) {
+            setError(error);
+            setLoading(false);
+            setloader(false);
+        }
+    }
 
 
     const createNewVendor = () => {
@@ -205,6 +241,7 @@ const VehicleTableList = () => {
                                         scrollButtons={false}
                                         aria-label="scrollable prevent tabs example"
                                     >
+
                                         <Tab label="Vehicle" />
                                         <Tab label="Employees" />
 

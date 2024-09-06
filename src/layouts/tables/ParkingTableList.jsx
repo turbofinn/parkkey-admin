@@ -39,10 +39,12 @@ function ParkingTableList() {
         open: false
     });
     const [tfDialog, settfDialog] = useState({
+
         editopen: false,
         createopen: false,
         fullWidth: false,
         maxWidth: "ld"
+        
     });
     const Name = ({ image, name, email, description }) => (
         <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -83,7 +85,6 @@ function ParkingTableList() {
                     onClick={() => {
                         localStorage.setItem("parkingID", data.parkingSpaceID)
                         navigate("/dashboard-parking");
-
                     }}
                     variant='text' style={{ margin: "0", padding: "0", textTransform: "none", fontWeight: "400", fontSize: "0.7rem" }}>
                     <Name image={parkey} name={data.parkingName} description={data.location} style={{ fontSize: 'sm' }} />

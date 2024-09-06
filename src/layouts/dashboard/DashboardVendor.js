@@ -31,23 +31,34 @@ function DashboardVendor() {
 
 
   useEffect(() => {
-    fetchData()
-}, []);
+    fetchData();
+  }, []);
 
-const token = localStorage.getItem("token");
-const fetchData = async () => {
-  console.log("call")
+  const token = localStorage.getItem("token");
+  const vendorID = localStorage.getItem("vendorID");
+
+  const fetchData = async () => {
+
+    const requestedData = {
+
+      vendorID: vendorID,
+      parkingSpaceID: "",
+      employeeID: ""
+
+    }
+
+    console.log("call")
     try {
-        const response = await axios.post(`https://xkzd75f5kd.execute-api.ap-south-1.amazonaws.com/prod/fetch-analytics-for-admin`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        setdata(response.data)
-        console.log(response)
+      const response = await axios.post(`https://xkzd75f5kd.execute-api.ap-south-1.amazonaws.com/prod/fetch-analytics-for-admin`, requestedData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setdata(response.data);
+      console.log(response);
     } catch (error) {
     }
-};
+  };
 
   return (
     <DashboardLayout>
@@ -115,9 +126,9 @@ const fetchData = async () => {
           </Grid>
         </Grid>
 
-        <ParkingTableList/>
-    
-    
+        <ParkingTableList />
+
+
       </MDBox>
       <Footer />
     </DashboardLayout>

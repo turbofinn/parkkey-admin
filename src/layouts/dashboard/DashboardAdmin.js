@@ -30,20 +30,29 @@ function DashboardAdmin() {
 
 
   useEffect(() => {
-    fetchData()
+    fetchData();
 }, []);
 
 const token = localStorage.getItem("token");
+
 const fetchData = async () => {
+  const requestedData = {
+
+    vendorID: "",
+    parkingSpaceID: "",
+    employeeID: ""
+
+  }
+
   console.log("call")
     try {
-        const response = await axios.post(`https://xkzd75f5kd.execute-api.ap-south-1.amazonaws.com/prod/fetch-analytics-for-admin`, {
+        const response = await axios.post(`https://xkzd75f5kd.execute-api.ap-south-1.amazonaws.com/prod/fetch-analytics-for-admin`, requestedData, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
-        setdata(response.data)
-        console.log(response)
+        setdata(response.data);
+        console.log(response);
     } catch (error) {
     }
 };
