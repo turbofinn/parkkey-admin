@@ -168,7 +168,7 @@ export default function App() {
         </>
       )}
 
-{!token ?<Routes>
+{token ?<Routes>
   <Route path="/authentication/sign-in" element={<SignIn />} />
           <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
         </Routes>

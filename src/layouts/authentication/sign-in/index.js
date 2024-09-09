@@ -114,85 +114,47 @@ function Basic() {
   }
 
   const verifyOTP = async () => {
-    if (checked) {
-      try {
-        setLoading(true);
-        const response = await axios.post(
-          'https://xkzd75f5kd.execute-api.ap-south-1.amazonaws.com/prod/login-service/verify-otp/vendor',
-          {
-            mobileNo: mobile,
-            otp: OTP
-          }
-        ).then((res) => {
-          if (res.data.status.code === 1001) {
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("refresh_token", res.data.refreshToken);
-            localStorage.setItem("vendorID", res.data.vendor.vendorID);
-            Navigate("/dashboard");
-          } else {
-            Navigate("/authentication/sign-in");
-          }
-          setLoading(false);
-        });
-      } catch (error) {
-        console.error('Error:', error);
-        if (error.response && error.response.data && error.response.data.message === "No vendor found in the system with this number.") {
-          setErrorcheck(prevState => ({
-            ...prevState,
-            open: true,
-            message: "No vendor found in the system with this number."
-          }))
-        }else if (error.response && error.response.data && error.response.data.message === "Invalid OTP."){
-          setErrorcheck(prevState => ({
-            ...prevState,
-            open: true,
-            message: "Invalid OTP"
-          }))
-        }
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      try {
-        setLoading(true);
-        const response = await axios.post(
-          'https://xkzd75f5kd.execute-api.ap-south-1.amazonaws.com/prod/login-service/verify-otp/admin',
-          {
-            mobileNo: mobile,
-            otp: OTP
-          }
-        ).then((res) => {
-          if (res.data.status.code === 1001) {
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("refresh_token", res.data.refreshToken);
-            localStorage.setItem("adminID", res.data.admin.adminID);
-            Navigate("/dashboard");
-          } else {
-            Navigate("/authentication/sign-in");
-          }
-          setLoading(false);
-        });
-      } catch (error) {
-        console.error('Error:', error);
-        if (error.response && error.response.data && error.response.data.message === "No admin found in the system with this number.") {
-          setErrorcheck(prevState => ({
-            ...prevState,
-            open: true,
-            message: "No admin found in the system with this number."
-          }))
-        } else if (error.response && error.response.data && error.response.data.message === "Invalid OTP."){
-          setErrorcheck(prevState => ({
-            ...prevState,
-            open: true,
-            message: "Invalid OTP"
-          }))
-        }
-      } finally {
-        setLoading(false);
-      }
-    }
 
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        'https://xkzd75f5kd.execute-api.ap-south-1.amazonaws.com/prod/login-service/verify-otp/admin',
+        {
+          mobileNo: mobile,
+          otp: OTP
+        }
+      ).then((res) => {
+        if (res.data.status.code === 1001) {
+          localStorage.setItem("token", res.data.token);
+          localStorage.setItem("refresh_token", res.data.refreshToken);
+          localStorage.setItem("adminID", res.data.admin.adminID);
+          Navigate("/dashboard");
+        } else {
+          Navigate("/authentication/sign-in");
+        }
+        setLoading(false);
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      if (error.response && error.response.data && error.response.data.message === "No admin found in the system with this number.") {
+        setErrorcheck(prevState => ({
+          ...prevState,
+          open: true,
+          message: "No admin found in the system with this number."
+        }))
+      } else if (error.response && error.response.data && error.response.data.message === "Invalid OTP.") {
+        setErrorcheck(prevState => ({
+          ...prevState,
+          open: true,
+          message: "Invalid OTP"
+        }))
+      }
+    } finally {
+      setLoading(false);
+    }
   }
+
+  
   useEffect(() => {
     if (mobile.length == 10) {
       sendOTP();
@@ -247,18 +209,7 @@ function Basic() {
               <MDInput type="OTP" inputProps={{ maxLength: 4 }} label="OTP" fullWidth
                 onChange={(e) => { setOTP(e.target.value) }} />
             </MDBox>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Typography style={{ fontSize: "16px", color: "blue" }}>Admin</Typography>
-              <Switch
-                checked={checked}
-                onChange={handleChange}
-                inputProps={{ 'aria-label': 'controlled' }}
-                color="blue"
-              />
-              <Typography style={{ fontSize: "16px", color: "green" }}>Vendor</Typography>
-            </Stack>
-
-
+          
 
             <MDBox mt={4} mb={1}>
               <Button style={{ color: "#fff", background: "#0f7002", cursor: "pointer" }} fullWidth
