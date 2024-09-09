@@ -66,7 +66,6 @@ function ParkingTableList() {
     // );
     var columns = [
         { Header: "Name", accessor: "Name", width: "10%", align: "left" },
-        // { Header: "location", accessor: "location", width: "10%", align: "left" },
         { Header: "status", accessor: "status", width: "10%", align: "center" },
         { Header: "totalSpace", accessor: "totalSpace", width: "10%", align: "center" },
         { Header: "availableSpace", accessor: "availableSpace", width: "10%", align: "center" },
@@ -276,9 +275,6 @@ function ParkingTableList() {
 
 
             </MDBox>
-            {/* <div style={{ position: "fixed", bottom: "0", width: "80%", zIndex: "100", marginBottom: "1%" }}>
-                    <Footer />
-                </div> */}
 
         </>
     );

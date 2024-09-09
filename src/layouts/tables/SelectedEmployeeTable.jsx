@@ -33,7 +33,7 @@ import vehicleIcon from "../../assets/images/vehicle.png"
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { useNavigate } from "react-router-dom";
 
-const VehicleTableList = () => {
+const SelectedEmployeeTable = () => {
     const navigate = useNavigate();
     const [vehicleDetailsList, setvehicleDetailsList] = useState([]);
     const [editvendorDetails, seteditvendorDetails] = useState(null);
@@ -82,52 +82,19 @@ const VehicleTableList = () => {
         </MDBox>
     );
 
-    var columnsVehical = [
-        { Header: "Vehicle No", accessor: "Vehicle No", width: "10%", align: "left" },
-        { Header: "Parking Name", accessor: "Parking Name", width: "10%", align: "center" },
-        { Header: "Status", accessor: "Status", width: "10%", align: "center" },
-        { Header: "Entry Time", accessor: "Entry Time", width: "10%", align: "center" },
-        { Header: "Exit Time", accessor: "Exit Time", width: "10%", align: "center" },
-        { Header: "Employee Name", accessor: "Employee Name", width: "10%", align: "center" },
-    ]
+  
     var columnsEmployee = [
         { Header: "Employee Name", accessor: "Employee Name", width: "10%", align: "left" },
         { Header: "Parking Name", accessor: "Parking Name", width: "10%", align: "center" },
         { Header: "Today's Booking", accessor: "Today's Booking", width: "10%", align: "center" },
     ]
 
-    var rowsVehical = [];
-    vehicleDetailsList && vehicleDetailsList.length > 0 && vehicleDetailsList.map((data, index) => {
-        console.log("vehicleDetails", data)
-        rowsVehical.push({
-            "Vehicle No": <VehicleNo image={vehicleIcon} name={data.vehicleNo} mobileNo={data.mobileNo} style={{ fontSize: 'sm' }} />,
-            "Parking Name": <ParkingName description={data.parkingName} />,
-            "Status": (
-                <MDBox ml={-1}>
-                    <MDBadge badgeContent={data.exitTime ? "Exited" : "Parked"} color={data.exitTime ? "success" : "error"} variant="gradient" size="sm" />
-                </MDBox>
-            ),
-            "Entry Time": <Time description={data.entryTime} />,
-            "Exit Time": <Time description={data.exitTime} />,
-            "Employee Name": <ParkingName description={data.employeeName} />,
-        });
-
-    });
 
     var rowsEmployee = [];
     vehicleDetailsList && vehicleDetailsList.length > 0 && vehicleDetailsList.map((data, index) => {
         console.log("vehicleDetails", data)
         rowsEmployee.push({
-            "Employee Name":
-                <Button
-                    onClick={() => {
-                        localStorage.setItem("employeeID", data.employeeID);
-                        localStorage.setItem("employeeIndex", index );
-                        navigate("/dashboard-employee");
-                    }}
-                    variant='text' style={{ margin: "0", padding: "0", textTransform: "none", fontWeight: "400", fontSize: "0.7rem" }}>
-                    <ParkingName description={data.employeeName} />
-                </Button>,
+            "Employee Name": <ParkingName description={data.employeeName} />,
             "Parking Name": <ParkingName description={data.parkingName} />,
             "Today's Booking": <ParkingName description={data.todaysBooking} />
         });
@@ -136,10 +103,8 @@ const VehicleTableList = () => {
 
     const token = localStorage.getItem("token");
     useEffect(() => {
-        if (value == 0) fetchVehicalData();
-        else fetchEmployeeData();
-
-    }, [value]);
+         fetchEmployeeData();
+    }, []);
 
 
     const fetchVehicalData = async () => {
@@ -257,49 +222,6 @@ const VehicleTableList = () => {
                 <Grid container spacing={5}>
                     <Grid item xs={13}>
                         <Card>
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <Box sx={{ bgcolor: '#fff', borderRadius: "10px", color: "red", width: "40%", marginTop: "1%", marginLeft: "1%" }}>
-                                    <Tabs
-                                        value={value}
-                                        onChange={handleChange}
-                                        variant="scrollable"
-                                        scrollButtons={false}
-                                        aria-label="scrollable prevent tabs example"
-                                    >
-
-                                        <Tab label="Vehicle" />
-                                        <Tab label="Employees" />
-
-                                    </Tabs>
-                                </Box>
-
-                                <div style={{ display: "flex", width: "18.5%", marginTop: "1%" }}>
-                                    <OutlinedInput
-                                        id="outlined-adornment-weight"
-                                        size="small"
-                                        style={{ background: "#fff" }}
-                                        placeholder="MobileNo/VehicleNo"
-                                        endAdornment={<InputAdornment position="end"><ArrowRightAltIcon onClick={() => {
-                                            fetchData()
-                                        }} fontSize="medium" style={{ color: "blue", cursor: "pointer" }} /></InputAdornment>}
-                                        aria-describedby="outlined-weight-helper-text"
-                                        inputProps={{
-                                            'aria-label': 'weight',
-                                        }}
-                                        onChange={(e) => {
-                                            setsearch(e.target.value)
-                                        }}
-                                        onKeyPress={(e) => {
-                                            if (e.key === 'Enter') {
-                                                console.log("pressedKey", e.key);
-                                                fetchData();
-                                            }
-                                        }}
-                                    />
-                                </div>
-
-                            </div>
-
                             <MDBox pt={3}>
                                 {loading ?
                                     <Box
@@ -318,8 +240,8 @@ const VehicleTableList = () => {
                                     </Box> :
                                     <DataTable
                                         table={{
-                                            columns: value === 1 ? columnsEmployee : columnsVehical,
-                                            rows: value === 1 ? rowsEmployee : rowsVehical
+                                            columns: columnsEmployee,
+                                            rows: rowsEmployee 
                                         }}
                                         isSorted={false}
                                         entriesPerPage={false}
@@ -340,4 +262,4 @@ const VehicleTableList = () => {
     );
 }
 
-export default VehicleTableList;
+export default SelectedEmployeeTable;

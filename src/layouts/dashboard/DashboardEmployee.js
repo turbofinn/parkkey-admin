@@ -1,9 +1,9 @@
+
 import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -23,37 +23,39 @@ import LoactionMap from "components/TFMaps/LoactionMap";
 import MapCard from "examples/Cards/MapCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import ParkingTableList from "layouts/tables/ParkingTableList";
-import VehicleTableList from "layouts/tables/VehicleTableList";
+import SelectedEmployeeTable from "layouts/tables/SelectedEmployeeTable";
 
-function DashboardParking() {
+
+function DashboardEmployee() {
   const { sales, tasks } = reportsLineChartData;
   const [data, setdata] = useState({});
 
+
   useEffect(() => {
-    fetchData()
+    fetchData();
 }, []);
 
 const token = localStorage.getItem("token");
-const parkingID = localStorage.getItem("parkingID");
+
 const fetchData = async () => {
 
   const requestedData = {
 
     vendorID: "",
-    parkingSpaceID: parkingID,
-    employeeID: ""
+    parkingSpaceID: "",
+    employeeID: localStorage.getItem('employeeID')
 
   }
 
+  console.log("call")
     try {
-        const response = await axios.post(`https://xkzd75f5kd.execute-api.ap-south-1.amazonaws.com/prod/fetch-analytics-for-admin`,requestedData, {
+        const response = await axios.post(`https://xkzd75f5kd.execute-api.ap-south-1.amazonaws.com/prod/fetch-analytics-for-admin`, requestedData, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
-        setdata(response.data)
-        console.log(response)
+        setdata(response.data);
+        console.log(response);
     } catch (error) {
     }
 };
@@ -123,14 +125,14 @@ const fetchData = async () => {
             </MDBox>
           </Grid>
         </Grid>
-      
-        <VehicleTableList/>
-    
+        <MDBox mt={4.5}>
+        </MDBox>
     
       </MDBox>
+      <SelectedEmployeeTable/>
       <Footer />
     </DashboardLayout>
   );
 }
 
-export default DashboardParking;
+export default DashboardEmployee;

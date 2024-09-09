@@ -102,7 +102,6 @@ const VendorDialog = (props) => {
             handleClose();
             props.fetchData();
         } catch (error) {
-            // console.error('Error:', error);
             if (error.response && error.response.data) {
                 const errorMessage = error.response.data.message;
                 if (errorMessage === "Vendor ID Not present.") {

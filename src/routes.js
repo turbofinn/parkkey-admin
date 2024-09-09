@@ -14,6 +14,7 @@ import EmployeeTables from "layouts/tables/EmployeeTables";
 import VehicleTables from "layouts/tables/VehicleTables";
 import CarRepairIcon from '@mui/icons-material/CarRepair';
 import DashboardParking from "layouts/dashboard/DashboardParking";
+import DashboardEmployee from "layouts/dashboard/DashboardEmployee";
 
 const routes = [
   {
@@ -43,6 +44,16 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard-parking",
     component: <DashboardParking />,
+    role: ["Admin"],
+    showInSideBar: false
+  },
+  {
+    type: "collapse",
+    name: "Dashboard Employee",
+    key: "dashboard-employee",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "/dashboard-employee",
+    component: <DashboardEmployee />,
     role: ["Admin"],
     showInSideBar: false
   },
