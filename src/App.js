@@ -168,16 +168,16 @@ export default function App() {
         </>
       )}
 
-{token ?<Routes>
-  <Route path="/authentication/sign-in" element={<SignIn />} />
-          <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
-        </Routes>
+      {!token ? <Routes>
+        <Route path="/authentication/sign-in" element={<SignIn />} />
+        <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
+      </Routes>
         :
         <Routes>
           {getRoutes(routes)}
           <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>
-        }
+      }
     </ThemeProvider>
   );
 }
