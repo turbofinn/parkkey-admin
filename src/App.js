@@ -54,6 +54,7 @@ import SignIn from "layouts/authentication/sign-in"
 
 import brandDark from "assets/images/onlpLogo.png";
 import brandWhite from "assets/images/onlpLogo.png";
+import Test from "components/Test";
 
 export default function App() {
   const token = localStorage.getItem("token");
@@ -178,6 +179,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>
       }
+      {/* <Test /> */}
     </ThemeProvider>
   );
 }

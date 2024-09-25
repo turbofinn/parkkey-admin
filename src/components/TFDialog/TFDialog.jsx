@@ -11,13 +11,14 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { Grid } from '@mui/material';
+import { Grid, Table, TableHead, TableCell, TableRow, TableBody } from '@mui/material';
 import { TextField, Typography } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Chip } from "@mui/material";
 import { useState, useEffect } from 'react';
 import axios from "axios";
 import ErrorDialog from "components/ErrorDialog/ErrorDialog";
+
 
 export default function MaxWidthDialog(props) {
     const [open, setOpen] = React.useState(false);
@@ -36,6 +37,19 @@ export default function MaxWidthDialog(props) {
     const [TariffCharge, setTariffCharge] = useState(0);
     const [Rating, setRating] = useState(0);
     const [Review, setReview] = useState('');
+    const [openChargesDialog, setOpenChargesDialog] = useState(false);
+    const [parkingAddress, setParkingAddress] = useState('');
+
+    const [FirstPeriodStartTime, setFirstPeriodStartTime] = useState('');
+    const [FirstPeriodEndTime, setFirstPeriodEndTime] = useState('');
+    const [SecondPeriodEndTime, setSecondPeriodEndTime] = useState('');
+    const [ThirdPeriodEndTime, setThirdPeriodEndTime] = useState('');
+    const [FourthPeriodEndTime, setFourthPeriodEndTime] = useState('');
+
+    const [FirstPeriodCharges, setFirstPeriodCharges] = useState('');
+    const [SecondPeriodCharges, setSecondPeriodCharges] = useState('');
+    const [ThirdPeriodCharges, setThirdPeriodCharges] = useState('');
+    const [FourthPeriodCharges, setFourthPeriodCharges] = useState('');
 
 
     const [errorchecked, setErrorcheck] = useState({
@@ -89,6 +103,9 @@ export default function MaxWidthDialog(props) {
         }));
         props.seteditparkingDetails(() => null);
     };
+    const handleCloseCharges = () => {
+        setOpenChargesDialog(false);
+    };
     const handleLoader = () => {
         props.setloader(prevState => ({
             ...prevState,
@@ -101,8 +118,30 @@ export default function MaxWidthDialog(props) {
             open: false
         }));
     }
-    const handleSubmit = async () => {
+    const handleSubmit = async (longitude, latitude) => {
         handleLoader();
+        const tariffCharges = [
+            {
+                firstPeriodStartTime: FirstPeriodStartTime,
+                firstPeriodEndTime: FirstPeriodEndTime,
+                firstPeriodCharges: FirstPeriodCharges
+            },
+            {
+                secondPeriodStartTime: FirstPeriodEndTime,
+                secondPeriodEndTime: SecondPeriodEndTime,
+                secondPeriodCharges: SecondPeriodCharges,
+            },
+            {
+                thirdPeriodStartTime: SecondPeriodEndTime,
+                thirdPeriodEndTime: ThirdPeriodEndTime,
+                thirdPeriodCharges: ThirdPeriodCharges
+            },
+            {
+                fourthPeriodStartTime: ThirdPeriodEndTime,
+                fourthPeriodEndTime: FourthPeriodEndTime,
+                fourthPeriodCharges: FourthPeriodCharges
+            }
+        ]
         const data = {
             vendorID: vendorID,
             vehicleType: vehicle,
@@ -111,16 +150,17 @@ export default function MaxWidthDialog(props) {
             totalSpace: TotalSpace,
             rating: Rating,
             review: Review,
-            location: location,
+            location: parkingAddress,
             tariffTime: TariffTime,
-            tariffCharges: TariffCharge,
-            latitude: Latitude,
-            longitude: Longitude
+            tariffCharges: tariffCharges,
+            latitude: latitude,
+            longitude: longitude
         };
         const headers = {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
         };
+        console.log('data', data);
 
         try {
             const response = await axios.post(url, data, { headers });
@@ -234,18 +274,112 @@ export default function MaxWidthDialog(props) {
             handleLoaderfalse();
         }
     }
+
+
+    const getLatitudeAndLongitude = async () => {
+        try {
+            const API_KEY = "AIzaSyD-_p4x8ysVeIqV1H92viTaonxkBW80QYA";
+            const response = await axios.get(
+                `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(parkingAddress)}&key=${API_KEY}`
+            ).then((response) => {
+                const location = response.data.results[0].geometry.location;
+                setLongitude(location.lng);
+                setLatitude(location.lat);
+                handleSubmit(location.lng, location.lat);
+            });
+        } catch (error) {
+            console.error("Error fetching coordinates:", error);
+        }
+    };
+
     return (
         <React.Fragment>
             {
                 errorchecked.open && (<ErrorDialog message={errorchecked.message} setErrorcheck={setErrorcheck}
                     errorchecked={errorchecked} />)
             }
+
             <Dialog
                 fullWidth={fullWidth}
                 maxWidth={maxWidth}
                 open={props.createopen || props.editopen}
                 onClose={handleClose}
             >
+                {openChargesDialog &&
+                    <Dialog
+                        fullWidth={fullWidth}
+                        maxWidth={maxWidth}
+                        open={true}
+                        onClose={handleCloseCharges}>
+                        <table style={{
+                            borderCollapse: 'collapse', width: '95%', margin: '1.5rem auto',
+                            fontFamily: 'Arial, sans-serif', fontSize: '0.8rem'
+                        }}>
+                            <thead>
+                                <tr style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
+                                    <th>Time Period</th>
+                                    <th>Total Charges</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                                            <TextField label="Start" variant="outlined" size="small" onChange={(e) => { setFirstPeriodStartTime(e.target.value) }} value={FirstPeriodStartTime} />
+                                            <TextField label="End" variant="outlined" size="small" onChange={(e) => { setFirstPeriodEndTime(e.target.value) }} value={FirstPeriodEndTime} />
+                                        </div>
+                                    </td>
+                                    <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
+                                        <TextField label="Charges" variant="outlined" size="small" onChange={(e) => { setFirstPeriodCharges(e.target.value) }} />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                                            <TextField label="Start" variant="outlined" size="small" value={FirstPeriodEndTime} disabled={true} />
+                                            <TextField label="End" variant="outlined" size="small" onChange={(e) => { setSecondPeriodEndTime(e.target.value) }} />
+                                        </div>
+                                    </td>
+                                    <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
+                                        <TextField label="Charges" variant="outlined" size="small" onChange={(e) => { setFirstPeriodCharges(e.target.value) }} />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                                            <TextField label="Start" variant="outlined" size="small" value={SecondPeriodEndTime} disabled={true} />
+                                            <TextField label="End" variant="outlined" size="small" onChange={(e) => { setThirdPeriodEndTime(e.target.value) }} />
+                                        </div>
+                                    </td>
+                                    <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
+                                        <TextField label="Charges" variant="outlined" size="small" onChange={(e) => { setSecondPeriodCharges(e.target.value) }} />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                                            <TextField label="Start" variant="outlined" size="small" value={ThirdPeriodEndTime} disabled={true} />
+                                            <TextField label="End" variant="outlined" size="small" onChange={(e) => { setThirdPeriodCharges(e.target.value) }} />
+                                        </div>
+                                    </td>
+                                    <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
+                                        <TextField label="Charges" variant="outlined" size="small" onChange={(e) => { setFourthPeriodCharges(e.target.value) }} />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <DialogActions>
+
+                            <Stack direction="row" spacing={2}>
+                                <Button
+                                    variant="contained"
+                                    style={{ color: 'white' }}
+                                    onClick={handleCloseCharges}>Save
+                                </Button>
+                            </Stack>
+                        </DialogActions>
+                    </Dialog>
+                }
                 {props.createopen && (<DialogTitle style={{ color: '#007FFF' }} >Add New Parking</DialogTitle>)}
                 {props.editopen && (<DialogTitle style={{ color: '#007FFF' }} >Edit Parking Details</DialogTitle>)}
                 <DialogContent>
@@ -268,7 +402,7 @@ export default function MaxWidthDialog(props) {
                             />
                         </Grid>
                     </Grid>
-                    <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
+                    {/* <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
                         <Grid item xs={3}>
                             <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }}>Location </Typography>
                         </Grid>
@@ -286,7 +420,7 @@ export default function MaxWidthDialog(props) {
                                 onChange={(e) => { setLocation(e.target.value) }}
                             />
                         </Grid>
-                    </Grid>
+                    </Grid> */}
                     <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
                         <Grid item xs={3}>
                             <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }}>Vehicle Type </Typography>
@@ -364,45 +498,20 @@ export default function MaxWidthDialog(props) {
                             />
                         </Grid>
                     </Grid>
-                    <Grid>
-                        <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }}>
-                            <Grid item xs={3}>
-                                <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }}>Longitude </Typography>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <TextField
-                                    style={{ margin: "1%", width: "100%" }}
-                                    label="Longitude"
-                                    id="outlined-size-small"
-                                    placeholder="Longitude"
-                                    size="small"
-                                    value={
-                                        // props.editopen ? props.editparkingDetails.longitude : ''
-                                        Longitude
-                                    }
-                                    onChange={(e) => { setLongitude(e.target.value) }}
-                                />
-                            </Grid>
+                    <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
+                        <Grid item xs={3}>
+                            <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }}>Parking Address</Typography>
                         </Grid>
-
-                        <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
-                            <Grid item xs={3}>
-                                <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }}>Latitude </Typography>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <TextField
-                                    style={{ margin: "1%", width: "100%" }}
-                                    label="Latitude"
-                                    id="outlined-size-small"
-                                    placeholder="Latitude"
-                                    size="small"
-                                    value={
-                                        // props.editopen ? props.editparkingDetails.latitude : ''
-                                        Latitude
-                                    }
-                                    onChange={(e) => { setLatitude(e.target.value) }}
-                                />
-                            </Grid>
+                        <Grid item xs={8}>
+                            <TextField
+                                style={{ margin: "1%", width: "100%" }}
+                                label="parking address"
+                                id="outlined-size-small"
+                                placeholder="parking address"
+                                size="small"
+                                value={parkingAddress}
+                                onChange={(e) => { setParkingAddress(e.target.value) }}
+                            />
                         </Grid>
                     </Grid>
                     <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
@@ -430,17 +539,15 @@ export default function MaxWidthDialog(props) {
                             <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }}>Tariff Charges </Typography>
                         </Grid>
                         <Grid item xs={8}>
-                            <TextField
-                                style={{ margin: "1%", width: "100%" }}
+                            <Box
+                                style={{ margin: "1%", width: "100%", border: '1px solid rgba(0, 0,0,0.2)', padding: '1rem', cursor: 'pointer', borderRadius: '0.3rem' }}
                                 label="Tariff Charges"
                                 id="outlined-size-small"
                                 placeholder="Tariff Charges"
                                 size="small"
-                                value={
-                                    // props.editopen ? props.editparkingDetails.charges.tariffRate : ''
-                                    TariffCharge
-                                }
-                                onChange={(e) => { setTariffCharge(e.target.value) }}
+                                onClick={() => {
+                                    setOpenChargesDialog(true);
+                                }}
                             />
                         </Grid>
                     </Grid>
@@ -492,7 +599,7 @@ export default function MaxWidthDialog(props) {
                             <Button
                                 variant="contained"
                                 style={{ color: 'white' }}
-                                onClick={handleSubmit}>Submit</Button>
+                                onClick={getLatitudeAndLongitude}>Submit</Button>
                         </Stack>
                     }
                     {props.editopen &&
@@ -506,6 +613,6 @@ export default function MaxWidthDialog(props) {
                     <Button onClick={handleClose}>Close</Button>
                 </DialogActions>
             </Dialog>
-        </React.Fragment>
+        </React.Fragment >
     );
 }

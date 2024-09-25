@@ -44,7 +44,7 @@ function ParkingTableList() {
         createopen: false,
         fullWidth: false,
         maxWidth: "ld"
-        
+
     });
     const Name = ({ image, name, email, description }) => (
         <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -110,7 +110,7 @@ function ParkingTableList() {
                 </MDTypography>
             ),
             tariffTime: (
-                <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+                <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium" >
                     {data && data.charges && data.charges.tariffTime ? data.charges.tariffTime : 6} hours
                 </MDTypography>
             ),

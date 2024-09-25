@@ -15,7 +15,7 @@ import VehicleTables from "layouts/tables/VehicleTables";
 import CarRepairIcon from '@mui/icons-material/CarRepair';
 import DashboardParking from "layouts/dashboard/DashboardParking";
 import DashboardEmployee from "layouts/dashboard/DashboardEmployee";
-
+// import Test from "components/Test";
 const routes = [
   {
     type: "collapse",
@@ -63,7 +63,7 @@ const routes = [
     key: "Employees",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/Employees",
-    component: <EmployeeTables/>,
+    component: <EmployeeTables />,
     role: ["Admin"],
     showInSideBar: true
   },
@@ -91,7 +91,7 @@ const routes = [
     type: "collapse",
     name: "Vehicles",
     key: "Vehicles",
-    icon: <CarRepairIcon/>,
+    icon: <CarRepairIcon />,
     route: "/Vehicles",
     component: <VehicleTables />,
     role: ["Admin"],
@@ -106,6 +106,15 @@ const routes = [
     component: <Billing />,
     role: []
   },
+  // {
+  //   type: "collapse",
+  //   name: "Test",
+  //   key: "Test",
+  //   icon: <Icon fontSize="small">receipt_long</Icon>,
+  //   route: "/test",
+  //   component: <Test />,
+  //   role: []
+  // },
   // {
   //   type: "collapse",
   //   name: "RTL",
