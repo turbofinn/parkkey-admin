@@ -92,6 +92,7 @@ const VehicleTableList = () => {
     ]
     var columnsEmployee = [
         { Header: "Employee Name", accessor: "Employee Name", width: "10%", align: "left" },
+        { Header: "Mobile No", accessor: "Mobile No", width: "10%", align: "left" },
         { Header: "Parking Name", accessor: "Parking Name", width: "10%", align: "center" },
         { Header: "Today's Booking", accessor: "Today's Booking", width: "10%", align: "center" },
     ]
@@ -122,12 +123,13 @@ const VehicleTableList = () => {
                 <Button
                     onClick={() => {
                         localStorage.setItem("employeeID", data.employeeID);
-                        localStorage.setItem("employeeIndex", index );
+                        localStorage.setItem("employeeIndex", index);
                         navigate("/dashboard-employee");
                     }}
                     variant='text' style={{ margin: "0", padding: "0", textTransform: "none", fontWeight: "400", fontSize: "0.7rem" }}>
                     <ParkingName description={data.employeeName} />
                 </Button>,
+            "Mobile No": <ParkingName description={data.mobileNo} />,
             "Parking Name": <ParkingName description={data.parkingName} />,
             "Today's Booking": <ParkingName description={data.todaysBooking} />
         });

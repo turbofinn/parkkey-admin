@@ -21,6 +21,7 @@ import ErrorDialog from "components/ErrorDialog/ErrorDialog";
 
 
 export default function MaxWidthDialog(props) {
+
     const [open, setOpen] = React.useState(false);
     const [fullWidth, setFullWidth] = React.useState(true);
     const [maxWidth, setMaxWidth] = React.useState('sm');
@@ -62,16 +63,26 @@ export default function MaxWidthDialog(props) {
         if (props && props.editparkingDetails !== null) {
             setVehicle(props.editparkingDetails.vehicleType);
             setName(props.editparkingDetails.parkingName);
-            setLocation(props.editparkingDetails.location);
+            setParkingAddress(props.editparkingDetails.location);
             setTotalSpace(props.editparkingDetails.totalSpace);
             setAvailableSpace(props.editparkingDetails.availableSpace);
             setLongitude(props.editparkingDetails.longitude);
             setLatitude(props.editparkingDetails.latitude);
             setTariffCharge(props.editparkingDetails.charges.tariffRate);
-            setTariffTime(props.editparkingDetails.charges.tariffTime);
+            setFirstPeriodStartTime((JSON.parse(props.editparkingDetails.charges.tariffRate))[0].startTime);
+            setFirstPeriodEndTime((JSON.parse(props.editparkingDetails.charges.tariffRate))[0].endTime);
+            setFirstPeriodCharges((JSON.parse(props.editparkingDetails.charges.tariffRate))[0].charges);
+            setSecondPeriodEndTime((JSON.parse(props.editparkingDetails.charges.tariffRate))[1].endTime);
+            setSecondPeriodCharges((JSON.parse(props.editparkingDetails.charges.tariffRate))[1].charges);
+            setThirdPeriodEndTime((JSON.parse(props.editparkingDetails.charges.tariffRate))[2].endTime);
+            setThirdPeriodCharges((JSON.parse(props.editparkingDetails.charges.tariffRate))[2].charges);
+            setFourthPeriodEndTime((JSON.parse(props.editparkingDetails.charges.tariffRate))[3].endTime);
+            setFourthPeriodCharges((JSON.parse(props.editparkingDetails.charges.tariffRate))[3].charges);
             setRating(props.editparkingDetails.rating);
             setReview(props.editparkingDetails.review);
+            console.log("props.editparkingDetails.charges.tariffRate", props.editparkingDetails);
         }
+        console.log("props.editparkingDetails.charges.tariffRate", props.editparkingDetails);
     }, []);
 
     const url = "https://xkzd75f5kd.execute-api.ap-south-1.amazonaws.com/prod/user-management/parking-space-onboarding";
@@ -84,17 +95,6 @@ export default function MaxWidthDialog(props) {
         "Truck",
         "Bus",
     ];
-    // console.log("xy", name);
-    // console.log("xy", location);
-    // console.log("xy", vehicle);
-    // console.log("xy", TotalSpace);
-    // console.log("xy", AvailableSpace);
-    // console.log("xy", Longitude);
-    // console.log("xy", Latitude);
-    // console.log("xy", TariffTime);
-    // console.log("xy", TariffCharge);
-    // console.log("xy", Rating);
-    // console.log("xy", Review);
     const handleClose = () => {
         props.settfDialog(prevState => ({
             ...prevState,
@@ -122,24 +122,24 @@ export default function MaxWidthDialog(props) {
         handleLoader();
         const tariffCharges = [
             {
-                firstPeriodStartTime: FirstPeriodStartTime,
-                firstPeriodEndTime: FirstPeriodEndTime,
-                firstPeriodCharges: FirstPeriodCharges
+                startTime: FirstPeriodStartTime,
+                endTime: FirstPeriodEndTime,
+                charges: FirstPeriodCharges
             },
             {
-                secondPeriodStartTime: FirstPeriodEndTime,
-                secondPeriodEndTime: SecondPeriodEndTime,
-                secondPeriodCharges: SecondPeriodCharges,
+                startTime: FirstPeriodEndTime,
+                endTime: SecondPeriodEndTime,
+                charges: SecondPeriodCharges,
             },
             {
-                thirdPeriodStartTime: SecondPeriodEndTime,
-                thirdPeriodEndTime: ThirdPeriodEndTime,
-                thirdPeriodCharges: ThirdPeriodCharges
+                startTime: SecondPeriodEndTime,
+                endTime: ThirdPeriodEndTime,
+                charges: ThirdPeriodCharges
             },
             {
-                fourthPeriodStartTime: ThirdPeriodEndTime,
-                fourthPeriodEndTime: FourthPeriodEndTime,
-                fourthPeriodCharges: FourthPeriodCharges
+                startTime: ThirdPeriodEndTime,
+                endTime: FourthPeriodEndTime,
+                charges: FourthPeriodCharges
             }
         ]
         const data = {
@@ -151,10 +151,9 @@ export default function MaxWidthDialog(props) {
             rating: Rating,
             review: Review,
             location: parkingAddress,
-            tariffTime: TariffTime,
             tariffCharges: tariffCharges,
-            latitude: latitude,
-            longitude: longitude
+            latitude: parseInt(latitude),
+            longitude: parseInt(longitude)
         };
         const headers = {
             "Content-Type": "application/json",
@@ -227,6 +226,28 @@ export default function MaxWidthDialog(props) {
 
     const handleUpdate = () => {
         handleLoader();
+        const tariffCharges = [
+            {
+                startTime: FirstPeriodStartTime,
+                endTime: FirstPeriodEndTime,
+                charges: FirstPeriodCharges
+            },
+            {
+                startTime: FirstPeriodEndTime,
+                endTime: SecondPeriodEndTime,
+                charges: SecondPeriodCharges,
+            },
+            {
+                startTime: SecondPeriodEndTime,
+                endTime: ThirdPeriodEndTime,
+                charges: ThirdPeriodCharges
+            },
+            {
+                startTime: ThirdPeriodEndTime,
+                endTime: FourthPeriodEndTime,
+                charges: FourthPeriodCharges
+            }
+        ]
         const data = {
             parkingSpaceID: props.editparkingDetails.parkingSpaceID,
             vehicleType: vehicle,
@@ -236,11 +257,11 @@ export default function MaxWidthDialog(props) {
             totalSpace: TotalSpace,
             rating: Rating,
             review: Review,
-            location: location,
-            tariffTime: TariffTime,
-            tariffCharges: TariffCharge,
-            latitude: Latitude,
-            longitude: Longitude
+            location: parkingAddress,
+            // tariffTime: TariffTime,
+            tariffCharges: tariffCharges,
+            latitude: parseInt(Latitude),
+            longitude: parseInt(Longitude)
         };
         const headers = {
             "Content-Type": "application/json",
@@ -330,40 +351,40 @@ export default function MaxWidthDialog(props) {
                                         </div>
                                     </td>
                                     <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
-                                        <TextField label="Charges" variant="outlined" size="small" onChange={(e) => { setFirstPeriodCharges(e.target.value) }} />
+                                        <TextField label="Charges" variant="outlined" size="small" onChange={(e) => { setFirstPeriodCharges(e.target.value) }} value={FirstPeriodCharges} />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
                                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
                                             <TextField label="Start" variant="outlined" size="small" value={FirstPeriodEndTime} disabled={true} />
-                                            <TextField label="End" variant="outlined" size="small" onChange={(e) => { setSecondPeriodEndTime(e.target.value) }} />
+                                            <TextField label="End" variant="outlined" size="small" onChange={(e) => { setSecondPeriodEndTime(e.target.value) }} value={SecondPeriodEndTime} />
                                         </div>
                                     </td>
                                     <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
-                                        <TextField label="Charges" variant="outlined" size="small" onChange={(e) => { setFirstPeriodCharges(e.target.value) }} />
+                                        <TextField label="Charges" variant="outlined" size="small" onChange={(e) => { setSecondPeriodCharges(e.target.value) }} value={SecondPeriodCharges} />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
                                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
                                             <TextField label="Start" variant="outlined" size="small" value={SecondPeriodEndTime} disabled={true} />
-                                            <TextField label="End" variant="outlined" size="small" onChange={(e) => { setThirdPeriodEndTime(e.target.value) }} />
+                                            <TextField label="End" variant="outlined" size="small" onChange={(e) => { setThirdPeriodEndTime(e.target.value) }} value={ThirdPeriodEndTime} />
                                         </div>
                                     </td>
                                     <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
-                                        <TextField label="Charges" variant="outlined" size="small" onChange={(e) => { setSecondPeriodCharges(e.target.value) }} />
+                                        <TextField label="Charges" variant="outlined" size="small" onChange={(e) => { setThirdPeriodCharges(e.target.value) }} value={ThirdPeriodCharges} />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
                                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
                                             <TextField label="Start" variant="outlined" size="small" value={ThirdPeriodEndTime} disabled={true} />
-                                            <TextField label="End" variant="outlined" size="small" onChange={(e) => { setThirdPeriodCharges(e.target.value) }} />
+                                            <TextField label="End" variant="outlined" size="small" onChange={(e) => { setFourthPeriodEndTime(e.target.value) }} value={FourthPeriodEndTime} />
                                         </div>
                                     </td>
                                     <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
-                                        <TextField label="Charges" variant="outlined" size="small" onChange={(e) => { setFourthPeriodCharges(e.target.value) }} />
+                                        <TextField label="Charges" variant="outlined" size="small" onChange={(e) => { setFourthPeriodCharges(e.target.value) }} value={FourthPeriodCharges} />
                                     </td>
                                 </tr>
                             </tbody>
@@ -500,7 +521,7 @@ export default function MaxWidthDialog(props) {
                     </Grid>
                     <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
                         <Grid item xs={3}>
-                            <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }}>Parking Address</Typography>
+                            <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }} value={location}>Parking Address</Typography>
                         </Grid>
                         <Grid item xs={8}>
                             <TextField
@@ -514,7 +535,7 @@ export default function MaxWidthDialog(props) {
                             />
                         </Grid>
                     </Grid>
-                    <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
+                    {/* <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
                         <Grid item xs={3}>
                             <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }}>Tariff Time </Typography>
                         </Grid>
@@ -532,7 +553,7 @@ export default function MaxWidthDialog(props) {
                                 onChange={(e) => { setTariffTime(e.target.value) }}
                             />
                         </Grid>
-                    </Grid>
+                    </Grid> */}
 
                     <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
                         <Grid item xs={3}>

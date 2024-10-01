@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import AddLocationIcon from '@mui/icons-material/AddLocation';
 import TFDialog from "components/TFDialog/TFDialog";
-import { Button, TextField, Typography } from "@mui/material";
+import { Button, TextField, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogContent } from "@mui/material";
 import { TextFields } from "@mui/icons-material";
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
@@ -44,15 +44,33 @@ function ParkingTables() {
         fullWidth: false,
         maxWidth: "ld"
     });
+
+    const [hoveredIndex, setHoveredIndex] = useState(null);
+
+    const [open, setOpen] = useState(false);
+
+    const handleMouseEnter = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     const Name = ({ image, name, email, description }) => (
-        <MDBox display="flex" alignItems="center" lineHeight={1}>
+        <MDBox display="flex" textAlign="left" lineHeight={1}>
             <MDAvatar src={image} name={name} size="sm" />
             <MDBox ml={2} lineHeight={1}>
                 <MDTypography display="block" variant="button" fontWeight="medium">
                     {name}
                 </MDTypography>
-                <MDBox lineHeight={1} textAlign="left">
-                    <MDTypography variant="caption">{description}</MDTypography>
+                <MDBox lineHeight={1}>
+                    <MDTypography variant="caption" sx={{
+                        cursor: 'pointer',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                    }} onMouseEnter={handleMouseEnter}>{description && description.length > 10 ? `${description.slice(0, 15)}...` : description}</MDTypography>
                 </MDBox>
             </MDBox>
         </MDBox>
@@ -69,7 +87,6 @@ function ParkingTables() {
         { Header: "totalSpace", accessor: "totalSpace", width: "10%", align: "center" },
         { Header: "availableSpace", accessor: "availableSpace", width: "10%", align: "center" },
         { Header: "tariffCharges", accessor: "tariffCharges", width: "10%", align: "center" },
-        { Header: "tariffTime", accessor: "tariffTime", width: "10%", align: "center" },
         { Header: "action", accessor: "action", width: "10%", align: "center" },
     ]
 
@@ -106,12 +123,78 @@ function ParkingTables() {
             ),
             tariffCharges: (
                 <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-                    ₹ {data && data.charges && data.charges.tariffRate ? data.charges.tariffRate : 0}
-                </MDTypography>
-            ),
-            tariffTime: (
-                <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-                    {data && data.charges && data.charges.tariffTime ? data.charges.tariffTime : 6} hours
+
+                    <Box
+                        onMouseEnter={() => setHoveredIndex(index)}
+                        onMouseLeave={() => setHoveredIndex(null)}
+                        sx={{
+                            transition: '0.3s',
+                            width: 'fit-content',
+
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                fontSize: '0.8rem',
+                            }}
+                        >
+                            charges
+                        </Typography>
+
+                        <Table
+                            sx={{
+                                display: hoveredIndex === index ? 'block' : 'none',
+                                position: 'absolute',
+                                top: '50%',
+                                left: '70%',
+                                transform: 'translate(-50%, -50%)',
+                                backgroundColor: '#fff',
+                                zIndex: 1,
+                                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+                                border: '1px solid #ccc',
+                                borderRadius: '8px',
+                                maxWidth: '22vw',
+                                padding: '10px',
+                            }}
+                        >
+                            <TableRow>
+                                <TableCell sx={{ fontSize: '0.8rem', textAlign: 'center' }}>
+                                    Start Time
+                                </TableCell>
+                                <TableCell sx={{ fontSize: '0.8rem', textAlign: 'center' }}>
+                                    End Time
+                                </TableCell>
+                                <TableCell sx={{ fontSize: '0.8rem', textAlign: 'center' }}>
+                                    Charges
+                                </TableCell>
+                            </TableRow>
+                            {data && data.charges && data.charges.tariffRate ? (
+                                JSON.parse(data.charges.tariffRate).map((item, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell sx={{ fontSize: '0.8rem', textAlign: 'center' }}>
+                                            {item.startTime}
+                                        </TableCell>
+                                        <TableCell sx={{ fontSize: '0.8rem', textAlign: 'center' }}>
+                                            {item.endTime}
+                                        </TableCell>
+                                        <TableCell sx={{ fontSize: '0.8rem', textAlign: 'center' }}>
+                                            {item.charges}
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={3}>
+                                        <Typography variant="body2" align="center">
+                                            No Data Available
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </Table>
+
+                    </Box>
+
                 </MDTypography>
             ),
             action: (

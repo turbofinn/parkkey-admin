@@ -82,9 +82,10 @@ const SelectedEmployeeTable = () => {
         </MDBox>
     );
 
-  
+
     var columnsEmployee = [
         { Header: "Employee Name", accessor: "Employee Name", width: "10%", align: "left" },
+        { Header: "Mobile No", accessor: "Mobile No", width: "10%", align: "left" },
         { Header: "Parking Name", accessor: "Parking Name", width: "10%", align: "center" },
         { Header: "Today's Booking", accessor: "Today's Booking", width: "10%", align: "center" },
     ]
@@ -95,6 +96,7 @@ const SelectedEmployeeTable = () => {
         console.log("vehicleDetails", data)
         rowsEmployee.push({
             "Employee Name": <ParkingName description={data.employeeName} />,
+            "Mobile No": <ParkingName description={data.mobileNo} />,
             "Parking Name": <ParkingName description={data.parkingName} />,
             "Today's Booking": <ParkingName description={data.todaysBooking} />
         });
@@ -103,7 +105,7 @@ const SelectedEmployeeTable = () => {
 
     const token = localStorage.getItem("token");
     useEffect(() => {
-         fetchEmployeeData();
+        fetchEmployeeData();
     }, []);
 
 
@@ -241,7 +243,7 @@ const SelectedEmployeeTable = () => {
                                     <DataTable
                                         table={{
                                             columns: columnsEmployee,
-                                            rows: rowsEmployee 
+                                            rows: rowsEmployee
                                         }}
                                         isSorted={false}
                                         entriesPerPage={false}

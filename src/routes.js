@@ -15,6 +15,7 @@ import VehicleTables from "layouts/tables/VehicleTables";
 import CarRepairIcon from '@mui/icons-material/CarRepair';
 import DashboardParking from "layouts/dashboard/DashboardParking";
 import DashboardEmployee from "layouts/dashboard/DashboardEmployee";
+import ParkingTableList from "layouts/tables/ParkingTableList";
 // import Test from "components/Test";
 const routes = [
   {
