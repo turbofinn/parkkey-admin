@@ -1,0 +1,36 @@
+/* Ensure that Google Autocomplete suggestions are visible above the modal */
+.pac-container {
+    z-index: 99999 !important;
+}
+/* MapModal.css */
+.modal {
+    display: flex;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    opacity: 0; /* Start invisible */
+    transform: scale(0.8); /* Start scaled down */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Transition effect */
+}
+
+.modal.open {
+    opacity: 1; /* Fully visible when open */
+    transform: scale(1); /* Scale to normal size */
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 1rem;
+    border: 1px solid #888;
+    width: 60%;
+    max-width: 40vw;
+    text-align: center;
+    z-index: 10000;
+}

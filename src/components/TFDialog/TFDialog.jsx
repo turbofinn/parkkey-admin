@@ -15,10 +15,20 @@ import { Grid, Table, TableHead, TableCell, TableRow, TableBody } from '@mui/mat
 import { TextField, Typography } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Chip } from "@mui/material";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from "axios";
 import ErrorDialog from "components/ErrorDialog/ErrorDialog";
+import { GoogleMap, LoadScript, Marker, Autocomplete } from '@react-google-maps/api';
+import Test from '../Test';
+const containerStyle = {
+    width: '40%',
+    height: '100px',
+};
 
+const center = {
+    lat: 37.7749,
+    lng: -122.4194, // Default to San Francisco
+};
 
 export default function MaxWidthDialog(props) {
 
@@ -39,6 +49,7 @@ export default function MaxWidthDialog(props) {
     const [Rating, setRating] = useState(0);
     const [Review, setReview] = useState('');
     const [openChargesDialog, setOpenChargesDialog] = useState(false);
+    const [openAddressDialog, setOpenAddressDialog] = useState(false);
     const [parkingAddress, setParkingAddress] = useState('');
 
     const [FirstPeriodStartTime, setFirstPeriodStartTime] = useState('');
@@ -51,6 +62,14 @@ export default function MaxWidthDialog(props) {
     const [SecondPeriodCharges, setSecondPeriodCharges] = useState('');
     const [ThirdPeriodCharges, setThirdPeriodCharges] = useState('');
     const [FourthPeriodCharges, setFourthPeriodCharges] = useState('');
+
+    const [coordinates, setCoordinates] = useState(center);
+    const [map, setMap] = useState(null);
+    const [marker, setMarker] = useState(null);
+    const [address, setAddress] = useState('');
+    const [city, setCity] = useState('');
+    const [state, setState] = useState('');
+    const [postalCode, setPostalCode] = useState('');
 
 
     const [errorchecked, setErrorcheck] = useState({
@@ -105,6 +124,9 @@ export default function MaxWidthDialog(props) {
     };
     const handleCloseCharges = () => {
         setOpenChargesDialog(false);
+    };
+    const handleCloseAddress = () => {
+        setOpenAddressDialog(false);
     };
     const handleLoader = () => {
         props.setloader(prevState => ({
@@ -222,8 +244,6 @@ export default function MaxWidthDialog(props) {
             handleLoaderfalse();
         }
     }
-
-
     const handleUpdate = () => {
         handleLoader();
         const tariffCharges = [
@@ -297,28 +317,91 @@ export default function MaxWidthDialog(props) {
     }
 
 
-    const getLatitudeAndLongitude = async () => {
-        try {
-            const API_KEY = "AIzaSyD-_p4x8ysVeIqV1H92viTaonxkBW80QYA";
-            const response = await axios.get(
-                `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(parkingAddress)}&key=${API_KEY}`
-            ).then((response) => {
-                const location = response.data.results[0].geometry.location;
-                setLongitude(location.lng);
-                setLatitude(location.lat);
-                handleSubmit(location.lng, location.lat);
+
+
+    const autocompleteRef = useRef(null);
+
+    const API_KEY = 'AIzaSyD-_p4x8ysVeIqV1H92viTaonxkBW80QYA';
+    const libraries = ['places'];
+
+    const handleMapClick = (event) => {
+        const lat = event.latLng.lat();
+        const lng = event.latLng.lng();
+        setCoordinates({ lat, lng });
+        setMarker({ lat, lng });
+    };
+
+    const handlePlaceSelect = () => {
+        console.log('hi')
+        const place = autocompleteRef.current.getPlace();
+        if (place && place.geometry) {
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+            setCoordinates({ lat, lng });
+            setMarker({ lat, lng });
+            map.setCenter({ lat, lng });
+
+            // Extract address components
+            const addressComponents = place.address_components;
+            let formattedAddress = place.formatted_address;
+            let city = '';
+            let state = '';
+            let postalCode = '';
+
+            addressComponents.forEach((component) => {
+                const types = component.types;
+                if (types.includes('locality')) {
+                    city = component.long_name;
+                }
+                if (types.includes('administrative_area_level_1')) {
+                    state = component.long_name;
+                }
+                if (types.includes('postal_code')) {
+                    postalCode = component.long_name;
+                }
             });
-        } catch (error) {
-            console.error("Error fetching coordinates:", error);
+
+            setAddress(formattedAddress);
+            setCity(city);
+            setState(state);
+            setPostalCode(postalCode);
+            handleSubmit(lng, lat);
         }
     };
 
+    const modalStyles = {
+        display: openAddressDialog ? "block" : "none",
+        position: "fixed",
+        left: "0",
+        top: "0",
+        width: "100%",
+        height: "100%",
+        overflow: "auto",
+        // backgroundColor: "rgba(0, 0, 0, 0.4)"
+    };
+
+    const modalContentStyles = {
+        // backgroundColor: "#fff",
+        margin: "15% auto",
+        padding: "20px",
+        border: "1px solid #888",
+        width: "80%",
+        textAlign: "center"
+    };
+
+    const closeButtonStyles = {
+        color: "#aaa",
+        float: "right",
+        fontSize: "28px",
+        fontWeight: "bold"
+    };
     return (
         <React.Fragment>
             {
                 errorchecked.open && (<ErrorDialog message={errorchecked.message} setErrorcheck={setErrorcheck}
                     errorchecked={errorchecked} />)
             }
+
 
             <Dialog
                 fullWidth={fullWidth}
@@ -401,9 +484,15 @@ export default function MaxWidthDialog(props) {
                         </DialogActions>
                     </Dialog>
                 }
+
                 {props.createopen && (<DialogTitle style={{ color: '#007FFF' }} >Add New Parking</DialogTitle>)}
                 {props.editopen && (<DialogTitle style={{ color: '#007FFF' }} >Edit Parking Details</DialogTitle>)}
                 <DialogContent>
+                    {openAddressDialog &&
+
+                        <Test setOpenAddressDialog={setOpenAddressDialog} />
+
+                    }
                     <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
                         <Grid item xs={3}>
                             <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }}>Parking Name </Typography>
@@ -423,25 +512,7 @@ export default function MaxWidthDialog(props) {
                             />
                         </Grid>
                     </Grid>
-                    {/* <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
-                        <Grid item xs={3}>
-                            <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }}>Location </Typography>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <TextField
-                                style={{ margin: "1%", width: "100%" }}
-                                label="location"
-                                id="outlined-size-small"
-                                placeholder="location"
-                                size="small"
-                                value={
-                                    // props.editopen ? props.editparkingDetails.location : ''
-                                    location
-                                }
-                                onChange={(e) => { setLocation(e.target.value) }}
-                            />
-                        </Grid>
-                    </Grid> */}
+
                     <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
                         <Grid item xs={3}>
                             <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }}>Vehicle Type </Typography>
@@ -531,29 +602,13 @@ export default function MaxWidthDialog(props) {
                                 placeholder="parking address"
                                 size="small"
                                 value={parkingAddress}
-                                onChange={(e) => { setParkingAddress(e.target.value) }}
+                                // onChange={(e) => { setParkingAddress(e.target.value) }}
+                                onClick={() => {
+                                    setOpenAddressDialog(true);
+                                }}
                             />
                         </Grid>
                     </Grid>
-                    {/* <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
-                        <Grid item xs={3}>
-                            <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }}>Tariff Time </Typography>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <TextField
-                                style={{ margin: "1%", width: "100%" }}
-                                label="Tariff Time"
-                                id="outlined-size-small"
-                                placeholder="Tariff Time"
-                                size="small"
-                                value={
-                                    // props.editopen ? props.editparkingDetails.charges.tariffTime : ''
-                                    TariffTime
-                                }
-                                onChange={(e) => { setTariffTime(e.target.value) }}
-                            />
-                        </Grid>
-                    </Grid> */}
 
                     <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
                         <Grid item xs={3}>
@@ -620,7 +675,7 @@ export default function MaxWidthDialog(props) {
                             <Button
                                 variant="contained"
                                 style={{ color: 'white' }}
-                                onClick={getLatitudeAndLongitude}>Submit</Button>
+                                onClick={() => { }}>Submit</Button>
                         </Stack>
                     }
                     {props.editopen &&
@@ -633,6 +688,11 @@ export default function MaxWidthDialog(props) {
                     }
                     <Button onClick={handleClose}>Close</Button>
                 </DialogActions>
+
+                {/* <Test /> */}
+
+
+
             </Dialog>
         </React.Fragment >
     );

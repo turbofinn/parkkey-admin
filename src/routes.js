@@ -86,7 +86,7 @@ const routes = [
     route: "/Vendors",
     component: <VendorTables />,
     role: ["Admin"],
-    showInSideBar: true
+    showInSideBar: false
   },
   {
     type: "collapse",
