@@ -18,25 +18,25 @@ import DashboardEmployee from "layouts/dashboard/DashboardEmployee";
 import ParkingTableList from "layouts/tables/ParkingTableList";
 // import Test from "components/Test";
 const routes = [
+  // {
+  //   type: "collapse",
+  //   name: "Dashboard",
+  //   key: "dashboard",
+  //   icon: <Icon fontSize="small">dashboard</Icon>,
+  //   route: "/dashboard",
+  //   component: <DashboardAdmin />,
+  //   role: ["Admin"],
+  //   showInSideBar: true
+  // },
   {
     type: "collapse",
     name: "Dashboard",
-    key: "dashboard",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/dashboard",
-    component: <DashboardAdmin />,
-    role: ["Admin"],
-    showInSideBar: true
-  },
-  {
-    type: "collapse",
-    name: "Dashboard Vendor",
     key: "dashboard-vendor",
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard-vendor",
     component: <DashboardVendor />,
     role: ["Admin"],
-    showInSideBar: false
+    showInSideBar: true
   },
   {
     type: "collapse",
@@ -48,16 +48,16 @@ const routes = [
     role: ["Admin"],
     showInSideBar: false
   },
-  {
-    type: "collapse",
-    name: "Dashboard Employee",
-    key: "dashboard-employee",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/dashboard-employee",
-    component: <DashboardEmployee />,
-    role: ["Admin"],
-    showInSideBar: false
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Vendors",
+  //   key: "Vendors",
+  //   icon: <Icon fontSize="small">table_view</Icon>,
+  //   route: "/Vendors",
+  //   component: <VendorTables />,
+  //   role: ["Admin"],
+  //   showInSideBar: true
+  // },
   {
     type: "collapse",
     name: "Employees",
@@ -72,7 +72,7 @@ const routes = [
     type: "collapse",
     name: "Parkings",
     key: "Parkings",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
     route: "/Parkings",
     component: <ParkingTables />,
     role: ["Admin"],
@@ -80,13 +80,13 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Vendors",
-    key: "Vendors",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/Vendors",
-    component: <VendorTables />,
+    name: "Dashboard Employee",
+    key: "dashboard-employee",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "/dashboard-employee",
+    component: <DashboardEmployee />,
     role: ["Admin"],
-    showInSideBar: true
+    showInSideBar: false
   },
   {
     type: "collapse",
