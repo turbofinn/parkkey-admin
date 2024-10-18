@@ -172,7 +172,7 @@ export default function MaxWidthDialog(props) {
             totalSpace: TotalSpace,
             rating: Rating,
             review: Review,
-            location: parkingAddress,
+            location: location,
             tariffCharges: tariffCharges,
             latitude: parseInt(latitude),
             longitude: parseInt(longitude)
@@ -277,7 +277,7 @@ export default function MaxWidthDialog(props) {
             totalSpace: TotalSpace,
             rating: Rating,
             review: Review,
-            location: parkingAddress,
+            location: location,
             // tariffTime: TariffTime,
             tariffCharges: tariffCharges,
             latitude: parseInt(Latitude),
@@ -490,7 +490,7 @@ export default function MaxWidthDialog(props) {
                 <DialogContent>
                     {openAddressDialog &&
 
-                        <Test setOpenAddressDialog={setOpenAddressDialog} />
+                        <Test setOpenAddressDialog={setOpenAddressDialog} setLatitude={setLatitude} setLongitude={setLongitude} setLocation={setLocation} />
 
                     }
                     <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
@@ -595,14 +595,12 @@ export default function MaxWidthDialog(props) {
                             <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }} value={location}>Parking Address</Typography>
                         </Grid>
                         <Grid item xs={8}>
-                            <TextField
-                                style={{ margin: "1%", width: "100%" }}
+                            <Box
+                                style={{ margin: "1%", width: "100%", border: '1px solid rgba(0, 0,0,0.2)', padding: '1rem', cursor: 'pointer', borderRadius: '0.3rem' }}
                                 label="parking address"
                                 id="outlined-size-small"
                                 placeholder="parking address"
                                 size="small"
-                                value={parkingAddress}
-                                // onChange={(e) => { setParkingAddress(e.target.value) }}
                                 onClick={() => {
                                     setOpenAddressDialog(true);
                                 }}
@@ -675,7 +673,7 @@ export default function MaxWidthDialog(props) {
                             <Button
                                 variant="contained"
                                 style={{ color: 'white' }}
-                                onClick={() => { }}>Submit</Button>
+                                onClick={() => { handleSubmit() }}>Submit</Button>
                         </Stack>
                     }
                     {props.editopen &&

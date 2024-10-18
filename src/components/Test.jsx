@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleMap, LoadScript, Marker, Autocomplete } from '@react-google-maps/api';
 import './MapModal.css';
-
+import { Button } from '@mui/material';
 const containerStyle = {
     width: '100%',
     height: '400px',
@@ -12,7 +12,7 @@ const center = {
     lng: 77.1025,
 };
 
-const FullAddressAutoCompleteMap = ({ setOpenAddressDialog }) => {
+const FullAddressAutoCompleteMap = ({ setOpenAddressDialog, setLatitude, setLongitude, setLocation }) => {
     const [coordinates, setCoordinates] = useState(center);
     const [map, setMap] = useState(null);
     const [marker, setMarker] = useState(null);
@@ -42,7 +42,8 @@ const FullAddressAutoCompleteMap = ({ setOpenAddressDialog }) => {
             setCoordinates({ lat, lng });
             setMarker({ lat, lng });
             map.setCenter({ lat, lng });
-
+            setLatitude(lat);
+            setLongitude(lng);
             const addressComponents = place.address_components;
             let formattedAddress = place.formatted_address;
             let city = '';
@@ -64,6 +65,7 @@ const FullAddressAutoCompleteMap = ({ setOpenAddressDialog }) => {
 
             setAddress(formattedAddress);
             setCity(city);
+            setLocation(city);
             setState(state);
             setPostalCode(postalCode);
         }
@@ -132,14 +134,26 @@ const FullAddressAutoCompleteMap = ({ setOpenAddressDialog }) => {
                         </GoogleMap>
                     </LoadScript>
 
-                    <div style={{}}>
+                    <div style={{ textAlign: 'start' }}>
                         <p>Latitude: {coordinates.lat}</p>
                         <p>Longitude: {coordinates.lng}</p>
                         <p>City: {city}</p>
                     </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            style={{ color: 'white' }}
+                            onClick={() => setOpenAddressDialog(false)}
+
+                        >
+                            Save
+                        </Button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
