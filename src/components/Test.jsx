@@ -12,12 +12,11 @@ const center = {
     lng: 77.1025,
 };
 
-const FullAddressAutoCompleteMap = ({ setOpenAddressDialog, setLatitude, setLongitude, setLocation }) => {
+const FullAddressAutoCompleteMap = ({ setOpenAddressDialog, setLatitude, setLongitude, setLocation,setAddress}) => {
     const [coordinates, setCoordinates] = useState(center);
     const [map, setMap] = useState(null);
     const [marker, setMarker] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(true);
-    const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
     const [postalCode, setPostalCode] = useState('');
@@ -63,11 +62,14 @@ const FullAddressAutoCompleteMap = ({ setOpenAddressDialog, setLatitude, setLong
                 }
             });
 
+            console.log("Addresssss",formattedAddress)
             setAddress(formattedAddress);
             setCity(city);
             setLocation(city);
             setState(state);
             setPostalCode(postalCode);
+
+            var address  = { }
         }
     };
 

@@ -249,7 +249,7 @@ const VehicleTableList = () => {
                 setvtDialog={setvtDialog}
                 component={createNewVendor()}
                 setloader={setloader}
-                fetchData={fetchData}
+                fetchData={fetchVehicalData}
             />
 
             }
@@ -275,14 +275,14 @@ const VehicleTableList = () => {
                                     </Tabs>
                                 </Box>
 
-                                <div style={{ display: "flex", width: "18.5%", marginTop: "1%" }}>
+                               {value===0 && <div style={{ display: "flex", width: "18.5%", marginTop: "1%" }}>
                                     <OutlinedInput
                                         id="outlined-adornment-weight"
                                         size="small"
                                         style={{ background: "#fff" }}
                                         placeholder="MobileNo/VehicleNo"
                                         endAdornment={<InputAdornment position="end"><ArrowRightAltIcon onClick={() => {
-                                            fetchData()
+                                            fetchVehicalData()
                                         }} fontSize="medium" style={{ color: "blue", cursor: "pointer" }} /></InputAdornment>}
                                         aria-describedby="outlined-weight-helper-text"
                                         inputProps={{
@@ -294,11 +294,11 @@ const VehicleTableList = () => {
                                         onKeyPress={(e) => {
                                             if (e.key === 'Enter') {
                                                 console.log("pressedKey", e.key);
-                                                fetchData();
+                                                fetchVehicalData();
                                             }
                                         }}
                                     />
-                                </div>
+                                </div>}
 
                             </div>
 

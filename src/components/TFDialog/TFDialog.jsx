@@ -71,6 +71,8 @@ export default function MaxWidthDialog(props) {
     const [state, setState] = useState('');
     const [postalCode, setPostalCode] = useState('');
 
+    console.log("Address 2 ", address)
+
 
     const [errorchecked, setErrorcheck] = useState({
         open: false,
@@ -174,8 +176,9 @@ export default function MaxWidthDialog(props) {
             review: Review,
             location: location,
             tariffCharges: tariffCharges,
-            latitude: parseInt(latitude),
-            longitude: parseInt(longitude)
+            latitude: latitude,
+            longitude: longitude,
+            address:address
         };
         const headers = {
             "Content-Type": "application/json",
@@ -191,53 +194,53 @@ export default function MaxWidthDialog(props) {
             console.log(response.data);
         } catch (error) {
             console.error('Error:', error);
-            if (error.response && error.response.data && error.response.data.message === "Tariff charges cannot be less than Rs. 5.") {
+            if (error.response && error.response.data && error.response.data.message ) {
                 setErrorcheck(prevState => ({
                     ...prevState,
                     open: true,
-                    message: "Tariff charges cannot be less than Rs. 5"
+                    message: error.response.data.message
                 }));
-            } else if (error.response && error.response.data && error.response.data.message === "Tariff time cannot be less than 0 hours.") {
+            } else if (error.response && error.response.data && error.response.data.message) {
                 setErrorcheck(prevState => ({
                     ...prevState,
                     open: true,
-                    message: "Tariff time cannot be less than 0 hours"
+                    message: error.response.data.message
                 }));
-            } else if (error.response && error.response.data && error.response.data.message === "Available space cannot be less than 0.") {
+            } else if (error.response && error.response.data && error.response.data.message) {
                 setErrorcheck(prevState => ({
                     ...prevState,
                     open: true,
-                    message: "Available space cannot be less than 0"
+                    message: error.response.data.message
                 }));
-            } else if (error.response && error.response.data && error.response.data.message === "Rating cannot be less than 0.") {
+            } else if (error.response && error.response.data && error.response.data.message) {
                 setErrorcheck(prevState => ({
                     ...prevState,
                     open: true,
-                    message: "Rating cannot be less than 0"
+                    message: error.response.data.message
                 }));
-            } else if (error.response && error.response.data && error.response.data.message === "Total space cannot be less than 0.") {
+            } else if (error.response && error.response.data && error.response.data.message) {
                 setErrorcheck(prevState => ({
                     ...prevState,
                     open: true,
-                    message: "Total space cannot be less than 0"
+                    message: error.response.data.message
                 }));
-            } else if (error.response && error.response.data && error.response.data.message === "Rating cannot be greater than 5.") {
+            } else if (error.response && error.response.data && error.response.data.message) {
                 setErrorcheck(prevState => ({
                     ...prevState,
                     open: true,
-                    message: "Rating cannot be greater than 5"
+                    message: error.response.data.message
                 }));
-            } else if (error.response && error.response.data && error.response.data.message === "Available space cannot be greater than total space.") {
+            } else if (error.response && error.response.data && error.response.data.message) {
                 setErrorcheck(prevState => ({
                     ...prevState,
                     open: true,
-                    message: "Available space cannot be greater than total space"
+                    message: error.response.data.message
                 }));
-            } else if (error.response && error.response.data && error.response.data.message === "Parking Space with same name already Exists.") {
+            } else if (error.response && error.response.data && error.response.data.message) {
                 setErrorcheck(prevState => ({
                     ...prevState,
                     open: true,
-                    message: "Parking Space with same name already Exists"
+                    message: error.response.data.message
                 }));
             }
         } finally {
@@ -467,8 +470,13 @@ export default function MaxWidthDialog(props) {
                                         </div>
                                     </td>
                                     <td style={{ border: '1px solid #ddd', padding: '0.8rem', textAlign: 'center' }}>
-                                        <TextField label="Charges" variant="outlined" size="small" onChange={(e) => { setFourthPeriodCharges(e.target.value) }} value={FourthPeriodCharges} />
+                                        <TextField label="Charges" variant="outlined" size="small" onChange={(e) => {
+                                            var charges = `[${FirstPeriodStartTime}-${FirstPeriodEndTime} hrs : Rs ${FirstPeriodCharges}], [${FirstPeriodEndTime}-${SecondPeriodEndTime} hrs : Rs ${SecondPeriodCharges}],[${SecondPeriodEndTime}-${SecondPeriodCharges} hrs : Rs ${ThirdPeriodCharges}],[${ThirdPeriodEndTime}-${FourthPeriodCharges} hrs : Rs ${FourthPeriodCharges}]`
+                                            setTariffCharge(charges)
+                                             setFourthPeriodCharges(e.target.value) }} value={FourthPeriodCharges} />
                                     </td>
+
+    
                                 </tr>
                             </tbody>
                         </table>
@@ -490,7 +498,7 @@ export default function MaxWidthDialog(props) {
                 <DialogContent>
                     {openAddressDialog &&
 
-                        <Test setOpenAddressDialog={setOpenAddressDialog} setLatitude={setLatitude} setLongitude={setLongitude} setLocation={setLocation} />
+                        <Test setOpenAddressDialog={setOpenAddressDialog} setLatitude={setLatitude} setLongitude={setLongitude} setLocation={setLocation} setAddress={setAddress}/>
 
                     }
                     <Grid container spacing={2} justifyContent="evenly" alignItems="center" style={{ marginTop: '2px', marginBottom: '2px' }} >
@@ -583,7 +591,6 @@ export default function MaxWidthDialog(props) {
                                 placeholder="Available Space"
                                 size="small"
                                 value={
-                                    // props.editopen ? props.editparkingDetails.availableSpace : ''
                                     AvailableSpace
                                 }
                                 onChange={(e) => { setAvailableSpace(e.target.value) }}
@@ -595,16 +602,32 @@ export default function MaxWidthDialog(props) {
                             <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }} value={location}>Parking Address</Typography>
                         </Grid>
                         <Grid item xs={8}>
-                            <Box
+                           {address?
+                            <TextField
+                            style={{ margin: "1%", width: "100%" }}
+                            label="Available Space"
+                            id="outlined-size-small"
+                            placeholder="Parking Address"
+                            size="small"
+                        
+                            value={
+                                address
+                            }
+                            onClick={() => {
+                                setOpenAddressDialog(true);
+                            }}
+                        />
+                           : <Box
                                 style={{ margin: "1%", width: "100%", border: '1px solid rgba(0, 0,0,0.2)', padding: '1rem', cursor: 'pointer', borderRadius: '0.3rem' }}
                                 label="parking address"
                                 id="outlined-size-small"
                                 placeholder="parking address"
                                 size="small"
+                                value = {address}
                                 onClick={() => {
                                     setOpenAddressDialog(true);
                                 }}
-                            />
+                            />}
                         </Grid>
                     </Grid>
 
@@ -613,6 +636,22 @@ export default function MaxWidthDialog(props) {
                             <Typography variant="body1" style={{ fontSize: matches ? '0.85rem' : '0.95rem', fontFamily: 'inherit' }}>Tariff Charges </Typography>
                         </Grid>
                         <Grid item xs={8}>
+                            {TariffCharge?
+                             <TextField
+                             style={{ margin: "1%", width: "100%" }}
+                             label="Available Space"
+                             id="outlined-size-small"
+                             placeholder="Parking Address"
+                             size="small"
+                         
+                             value={
+                                 TariffCharge
+                             }
+                             onClick={() => {
+                                setOpenChargesDialog(true);
+                             }}
+                         />
+                            :
                             <Box
                                 style={{ margin: "1%", width: "100%", border: '1px solid rgba(0, 0,0,0.2)', padding: '1rem', cursor: 'pointer', borderRadius: '0.3rem' }}
                                 label="Tariff Charges"
@@ -622,7 +661,7 @@ export default function MaxWidthDialog(props) {
                                 onClick={() => {
                                     setOpenChargesDialog(true);
                                 }}
-                            />
+                            />}
                         </Grid>
                     </Grid>
 
@@ -673,7 +712,7 @@ export default function MaxWidthDialog(props) {
                             <Button
                                 variant="contained"
                                 style={{ color: 'white' }}
-                                onClick={() => { handleSubmit() }}>Submit</Button>
+                                onClick={() => { handleSubmit(Latitude,Longitude) }}>Submit</Button>
                         </Stack>
                     }
                     {props.editopen &&
