@@ -142,7 +142,7 @@ export default function MaxWidthDialog(props) {
             open: false
         }));
     }
-    const handleSubmit = async (longitude, latitude) => {
+    const handleSubmit = async (latitude,longitude) => {
         handleLoader();
         const tariffCharges = [
             {
