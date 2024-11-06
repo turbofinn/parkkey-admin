@@ -100,6 +100,16 @@ const routes = [
   },
   {
     type: "collapse",
+    name: "Customer",
+    key: "Customer",
+    icon: <CarRepairIcon />,
+    route: "/Customer",
+    component: <VehicleTables />,
+    role: ["Admin"],
+    showInSideBar: true
+  },
+  {
+    type: "collapse",
     name: "Billing",
     key: "billing",
     icon: <Icon fontSize="small">receipt_long</Icon>,

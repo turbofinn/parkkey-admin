@@ -87,7 +87,6 @@ const SelectedEmployeeTable = () => {
         { Header: "Employee Name", accessor: "Employee Name", width: "10%", align: "left" },
         { Header: "Mobile No", accessor: "Mobile No", width: "10%", align: "left" },
         { Header: "Parking Name", accessor: "Parking Name", width: "10%", align: "center" },
-        { Header: "Today's Booking", accessor: "Today's Booking", width: "10%", align: "center" },
     ]
 
 
@@ -98,7 +97,6 @@ const SelectedEmployeeTable = () => {
             "Employee Name": <ParkingName description={data.employeeName} />,
             "Mobile No": <ParkingName description={data.mobileNo} />,
             "Parking Name": <ParkingName description={data.parkingName} />,
-            "Today's Booking": <ParkingName description={data.todaysBooking} />
         });
 
     });
@@ -220,7 +218,7 @@ const SelectedEmployeeTable = () => {
             }
 
 
-            <MDBox pt={0} pb={3}>
+            {/* <MDBox pt={0} pb={3}>
                 <Grid container spacing={5}>
                     <Grid item xs={13}>
                         <Card>
@@ -258,7 +256,7 @@ const SelectedEmployeeTable = () => {
                 </Grid>
 
 
-            </MDBox>
+            </MDBox> */}
 
         </>
     );

@@ -283,8 +283,8 @@ export default function MaxWidthDialog(props) {
             location: location,
             // tariffTime: TariffTime,
             tariffCharges: tariffCharges,
-            latitude: parseInt(Latitude),
-            longitude: parseInt(Longitude)
+            latitude: Latitude,
+            longitude: Longitude
         };
         const headers = {
             "Content-Type": "application/json",

@@ -51,9 +51,15 @@ const VehicleTables = () => {
         </MDBox>
     );
 
+    const Otp = ({ description }) => (
+        <MDBox lineHeight={1} textAlign="left">
+            <MDTypography variant="caption">{description?description:"Exited"}</MDTypography>
+        </MDBox>
+    );
+
     const Time = ({ description }) => (
         <MDBox lineHeight={1} textAlign="left">
-            <MDTypography variant="caption">{moment(description).format('DD-MM-YYYY, h:mm:ss a')}</MDTypography>
+            <MDTypography variant="caption">{description ? moment(description).format('DD-MM-YYYY, h:mm:ss a'):"In Progress"}</MDTypography>
         </MDBox>
     );
     const VehicleNo = ({ image, name, mobileNo, description }) => (
@@ -79,6 +85,7 @@ const VehicleTables = () => {
         { Header: "Entry Time", accessor: "Entry Time", width: "10%", align: "center" },
         { Header: "Exit Time", accessor: "Exit Time", width: "10%", align: "center" },
         { Header: "Employee Name", accessor: "Employee Name", width: "10%", align: "center" },
+        { Header: "Otp", accessor: "Otp", width: "10%", align: "center" }
     ]
 
     var rows = [];
@@ -95,6 +102,7 @@ const VehicleTables = () => {
             "Entry Time": <Time description={data.entryTime} />,
             "Exit Time": <Time description={data.exitTime} />,
             "Employee Name": <ParkingName description={data.employeeName} />,
+            "Otp": <Otp description={data.otp} />,
         });
 
     });
@@ -130,23 +138,6 @@ const VehicleTables = () => {
     };
 
 
-    const createNewVendor = () => {
-        return (
-            <>
-                <div style={{ color: "grey", width: "100%" }}>Add New Vendor</div>
-                <hr />
-                <div style={{ display: "flex", width: "100%" }}>
-                    <Typography>Vehicle No :</Typography>
-                    <TextField
-                        style={{ margin: "5%" }}
-                        label="Parking Name"
-                        id="outlined-size-small"
-                        placeholder="Parking Name"
-                        size="small"
-                    />
-                </div>
-            </>);
-    }
     return (
         <>
             {loader && loader.open && (<Box
@@ -167,20 +158,7 @@ const VehicleTables = () => {
                 <CircularProgress />
             </Box>)
             }
-            {vtDialog && (vtDialog.createopen || vtDialog.editopen) && <VendorDialog
-                editopen={vtDialog.editopen}
-                createopen={vtDialog.createopen}
-                maxWidth={vtDialog.maxWidth}
-                fullWidth={vtDialog.fullWidth}
-                editvendorDetails={editvendorDetails}
-                seteditvendorDetails={seteditvendorDetails}
-                setvtDialog={setvtDialog}
-                component={createNewVendor()}
-                setloader={setloader}
-                fetchData={fetchData}
-            />
-
-            }
+           
             <DashboardLayout>
                 <DashboardNavbar />
                 <MDBox pt={6} pb={3}>
@@ -226,18 +204,7 @@ const VehicleTables = () => {
                                             }}
                                         />
 
-                                        <AddLocationIcon onClick={() => {
-                                            setvtDialog(prevState => ({
-                                                ...prevState,
-                                                createopen: true
-                                            }))
-                                        }}
-                                            color="white" fontSize="large"
-                                            sx={{
-                                                '&:hover': {
-                                                    cursor: 'pointer',
-                                                },
-                                            }} />
+                                        
                                     </div>
 
 

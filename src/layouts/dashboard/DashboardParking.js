@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ParkingTableList from "layouts/tables/ParkingTableList";
 import VehicleTableList from "layouts/tables/VehicleTableList";
+import RevenueStatisticsCard from "examples/Cards/StatisticsCards/RevenueStatisticsCard";
 
 function DashboardParking() {
   const { sales, tasks } = reportsLineChartData;
@@ -109,11 +110,13 @@ const fetchData = async () => {
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
-              <ComplexStatisticsCard
+            <RevenueStatisticsCard
                 color="primary"
                 icon="person_add"
                 title="Today's Rvvenue"
-                count={data.todaysRevenue}
+                totalRevenue={data.todaysRevenue}
+                cash={data.todaysRevenueCash}
+                online={data.todaysRevenueWallet}
                 percentage={{
                   color: "success",
                   amount: "",
