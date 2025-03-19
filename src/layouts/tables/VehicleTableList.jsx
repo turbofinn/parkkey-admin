@@ -68,19 +68,28 @@ const VehicleTableList = () => {
             <MDTypography variant="caption">{moment(description).format('DD-MM-YYYY, h:mm:ss a')}</MDTypography>
         </MDBox>
     );
-    const VehicleNo = ({ image, name, mobileNo, description }) => (
-        <MDBox display="flex" alignItems="center" lineHeight={1}>
-            <MDAvatar src={image} name={name} size="sm" />
-            <MDBox ml={2} lineHeight={1}>
-                <MDTypography display="block" variant="button" fontWeight="medium">
-                    {name}
-                </MDTypography>
-                <MDBox lineHeight={1} textAlign="left">
-                    <MDTypography variant="caption">{mobileNo}</MDTypography>
+    const VehicleNo = ({ image, name, mobileNo, description }) => {
+        // Extract the last 4 digits of the mobile number
+        const lastFourDigits = mobileNo.slice(-4);
+        // Create a placeholder for the first 6 digits (e.g., "XXXXXX")
+        const firstSixDigits = mobileNo.length > 4 ? "XXXXXX" : "";
+    
+        return (
+            <MDBox display="flex" alignItems="center" lineHeight={1}>
+                <MDAvatar src={image} name={name} size="sm" />
+                <MDBox ml={2} lineHeight={1}>
+                    <MDTypography display="block" variant="button" fontWeight="medium">
+                        {name}
+                    </MDTypography>
+                    <MDBox lineHeight={1} textAlign="left">
+                        <MDTypography variant="caption">
+                            {firstSixDigits}{lastFourDigits}
+                        </MDTypography>
+                    </MDBox>
                 </MDBox>
             </MDBox>
-        </MDBox>
-    );
+        );
+    };
 
     var columnsVehical = [
         { Header: "Vehicle No", accessor: "Vehicle No", width: "10%", align: "left" },
@@ -150,7 +159,7 @@ const VehicleTableList = () => {
             const requestedData = {
 
                 "search": search,
-                "parkingID": localStorage.getItem("parkingID"),
+                // "parkingID": localStorage.getItem("parkingID"),
                 "vendorID": ""
 
             }

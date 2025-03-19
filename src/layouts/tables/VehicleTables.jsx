@@ -62,19 +62,26 @@ const VehicleTables = () => {
             <MDTypography variant="caption">{description ? moment(description).format('DD-MM-YYYY, h:mm:ss a'):"In Progress"}</MDTypography>
         </MDBox>
     );
-    const VehicleNo = ({ image, name, mobileNo, description }) => (
-        <MDBox display="flex" alignItems="center" lineHeight={1}>
-            <MDAvatar src={image} name={name} size="sm" />
-            <MDBox ml={2} lineHeight={1}>
-                <MDTypography display="block" variant="button" fontWeight="medium">
-                    {name}
-                </MDTypography>
-                <MDBox lineHeight={1} textAlign="left">
-                    <MDTypography variant="caption">{mobileNo}</MDTypography>
+    const VehicleNo = ({ image, name, mobileNo, description }) => {
+  
+        const lastFourDigits = mobileNo.slice(-4);
+        const firstSixDigits = mobileNo.length > 4 ? "XXXXXX" : "";
+        return (
+            <MDBox display="flex" alignItems="center" lineHeight={1}>
+                <MDAvatar src={image} name={name} size="sm" />
+                <MDBox ml={2} lineHeight={1}>
+                    <MDTypography display="block" variant="button" fontWeight="medium">
+                        {name}
+                    </MDTypography>
+                    <MDBox lineHeight={1} textAlign="left">
+                        <MDTypography variant="caption">
+                            {firstSixDigits}{lastFourDigits}
+                        </MDTypography>
+                    </MDBox>
                 </MDBox>
             </MDBox>
-        </MDBox>
-    );
+        );
+    };
 
     var columns = [
         { Header: "Vehicle No", accessor: "Vehicle No", width: "10%", align: "left" },
@@ -118,7 +125,7 @@ const VehicleTables = () => {
             setloader(true);
             var data = {
                 "search": search,
-                "parkingID": localStorage.getItem("parkingID"),
+                // "parkingID": localStorage.getItem("parkingID"),
                 "vendorID": ""
             }
             const response = await axios.post('https://xkzd75f5kd.execute-api.ap-south-1.amazonaws.com/prod/fetch-vehicle-list', data, {
