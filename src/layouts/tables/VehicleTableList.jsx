@@ -83,7 +83,7 @@ const VehicleTableList = () => {
                     </MDTypography>
                     <MDBox lineHeight={1} textAlign="left">
                         <MDTypography variant="caption">
-                            {firstSixDigits}{lastFourDigits}
+                            {mobileNo}
                         </MDTypography>
                     </MDBox>
                 </MDBox>
